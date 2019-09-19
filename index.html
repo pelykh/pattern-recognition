@@ -1,0 +1,65 @@
+<style>
+    canvas, video {
+        border: 1px solid black;
+    }
+
+    div {
+        margin: 10px;
+    }
+
+    .center-block {
+        display: block;
+        margin: auto;
+    }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<body>
+<video  class="center-block" id="videoInput" width="320" height="240"></video>
+<canvas class="center-block" id="canvasOutput" width=320></canvas>
+
+<script src="lib/opencv.js"></script>
+<script>
+  let video = document.getElementById("videoInput"); // video is the id of video tag
+  let streaming = false;
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+      streaming = true;
+    })
+    .catch(function(err) {
+      console.log("An error occurred! " + err);
+    });
+</script>
+<script>
+  let cap = new cv.VideoCapture(video);
+
+  let frame = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+  let fgmask = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+  let fgbg = new cv.BackgroundSubtractorMOG2(500, 16, true);
+
+  const FPS = 30;
+  function processVideo() {
+    try {
+      if (!streaming) {
+        // clean and stop.
+        frame.delete(); fgmask.delete(); fgbg.delete();
+        return;
+      }
+      let begin = Date.now();
+      // start processing.
+      cap.read(frame);
+      fgbg.apply(frame, fgmask);
+      cv.imshow('canvasOutput', fgmask);
+      // schedule the next one.
+      let delay = 1000/FPS - (Date.now() - begin);
+      setTimeout(processVideo, delay);
+    } catch (err) {
+      console.log(err)
+    }
+  };
+
+  // schedule the first one.
+  setTimeout(processVideo, 1000);
+</script>
+</body>>
