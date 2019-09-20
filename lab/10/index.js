@@ -4,21 +4,17 @@ function drawHandmadeHist(src, outputCanvasId, scale=1) {
   for(let i = 0; i< src.rows; i++) {
     for(let j = 0; j< src.cols; j++) {
       const k = src.ucharPtr(i, j)[0];
-
       hist[k] = (hist[k] || 0) + 1;
     }
   }
 
   const output = document.getElementById(outputCanvasId);
+  output.width = scale * 256;
   const ctx = output.getContext('2d');
   const pixelsInCanvas = src.rows * src.cols;
-  output.width = scale * 256;
-
   const arr = hist.map((el) => 1 - (75 * el / pixelsInCanvas));
 
   for (let i = 0; i <= 256; i++) {
-
-    console.log(i * scale, 0, scale, output.height * arr[i]);
     ctx.fillRect(i * scale, 0, scale, (output.height * arr[i]) || output.height);
   }
 }
