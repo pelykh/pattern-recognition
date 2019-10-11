@@ -1,0 +1,52 @@
+<style>
+    div {
+        margin: 10px;
+    }
+
+    button {
+        display: block;
+        margin: 2px;
+    }
+
+    .center-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .block {
+        display: inline-block;
+        text-align: center;
+    }
+
+    #controls {
+        position: fixed;
+        top: 50px;
+        left: 50px;
+    }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<body>
+
+<img id="pic" src="test.jpg" style="display: none"/>
+
+<div class="center-block">
+    <div class="block">
+        <canvas class="center-block" id="editor-canvas"/>
+    </div>
+</div>
+<div id="controls">
+    <button id="perspective-transform-button">Perspective Transform</button>
+    <button id="bilinear-transform-button">Bilinear Transform</button>
+    <button id="erosion-button">Erosion</button>
+    <button id="dilation-button">Dilation</button>
+    <button id="opening-button">Opening</button>
+    <button id="closing-button">Closing</button>
+    <button id="median-blur-button">Median Blur</button>
+    <button id="blur-video-button">Blur Video</button>
+    <button id="revert-button">Revert</button>
+</div>
+<script src="../lib/opencv.js"></script>
+<script src="transforms.js"></script>
+<script src="index.js"></script>
+</body>>
