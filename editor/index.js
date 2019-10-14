@@ -19,76 +19,85 @@ const loadImageFromFile = () => {
 
 loadImageFromFile();
 
-const editor = new Editor({ canvas, histCanvas });
+cv.onRuntimeInitialized = () => {
+  const editor = new Editor({ canvas, histCanvas });
 
-const erosionOperation = new Operation({
-  button: document.getElementById(('erosion-button')),
-  method: erosion,
-  editor,
-});
+  const erosionOperation = new Operation({
+    button: document.getElementById(('erosion-button')),
+    method: erosion,
+    editor,
+  });
 
-const dilationOperation = new Operation({
-  button: document.getElementById(('dilation-button')),
-  method: dilation,
-  editor,
-});
+  const dilationOperation = new Operation({
+    button: document.getElementById(('dilation-button')),
+    method: dilation,
+    editor,
+  });
 
-const openingOperation = new Operation({
-  button: document.getElementById(('opening-button')),
-  method: opening,
-  editor,
-});
+  const openingOperation = new Operation({
+    button: document.getElementById(('opening-button')),
+    method: opening,
+    editor,
+  });
 
-const closingOperation = new Operation({
-  button: document.getElementById(('closing-button')),
-  method: closing,
-  editor,
-});
+  const closingOperation = new Operation({
+    button: document.getElementById(('closing-button')),
+    method: closing,
+    editor,
+  });
 
-const perspectiveTransformOperation = new PickPointsOperation({
-  button: document.getElementById('perspective-transform-button'),
-  method: perspectiveTransform,
-  number: 4,
-  editor
-});
+  const perspectiveTransformOperation = new PickPointsOperation({
+    button: document.getElementById('perspective-transform-button'),
+    method: perspectiveTransform,
+    number: 4,
+    editor
+  });
 
-const biliniarTransformOperation = new PickPointsOperation({
-  button: document.getElementById('bilinear-transform-button'),
-  method: bilinearTransform,
-  number: 4,
-  editor,
-});
+  const biliniarTransformOperation = new PickPointsOperation({
+    button: document.getElementById('bilinear-transform-button'),
+    method: bilinearTransform,
+    number: 4,
+    editor,
+  });
 
-const medianBlurOperation = new Operation({
-  button: document.getElementById(('median-blur-button')),
-  method: medianBlur,
-  editor,
-});
+  const medianBlurOperation = new Operation({
+    button: document.getElementById(('median-blur-button')),
+    method: medianBlur,
+    editor,
+  });
 
-const greyImageOperation = new Operation({
-  button: document.getElementById(('grey-image-button')),
-  method: grayImage,
-  editor,
-});
+  const greyImageOperation = new Operation({
+    button: document.getElementById(('grey-image-button')),
+    method: grayImage,
+    editor,
+  });
 
-const normilizeOperation = new Operation({
-  button: document.getElementById(('normilize-button')),
-  method: normilize,
-  editor,
-});
+  const normilizeOperation = new Operation({
+    button: document.getElementById(('normilize-button')),
+    method: normilize,
+    editor,
+  });
 
-const equalizeOperation = new Operation({
-  button: document.getElementById(('equalize-button')),
-  method: equalize,
-  editor,
-});
+  const equalizeOperation = new Operation({
+    button: document.getElementById(('equalize-button')),
+    method: equalize,
+    editor,
+  });
 
-document.getElementById(('blur-video-button'))
-  .addEventListener('click', () => blurVideo(canvas, 11));
+  const findBallsOperation = new Operation({
+    button: document.getElementById(('find-balls-button')),
+    method: findBalls,
+    editor,
+  });
+
+  document.getElementById(('blur-video-button'))
+    .addEventListener('click', () => blurVideo(canvas, 11));
 
 
-document.getElementById('undo-button')
-  .addEventListener('click', () => editor.undo());
+  document.getElementById('undo-button')
+    .addEventListener('click', () => editor.undo());
 
-document.getElementById('redo-button')
-  .addEventListener('click', () => editor.redo());
+  document.getElementById('redo-button')
+    .addEventListener('click', () => editor.redo());
+
+};

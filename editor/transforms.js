@@ -177,3 +177,36 @@ function getHist(src) {
 
   return dst;
 }
+
+function findBalls({src}) {
+  const dst = src.clone();
+  const filled = new cv.Mat();
+  cv.cvtColor(src, filled, cv.COLOR_RGBA2GRAY, 0);
+  cv.threshold(filled, filled, 50, 200, cv.THRESH_BINARY);
+
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+// You can try more different parameters
+  cv.findContours(filled, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+
+  const minRectDim = 100;
+  const maxRectDim = 300;
+
+  for (let i = 0; i < contours.size(); ++i) {
+    const rect = cv.boundingRect(contours.get(i));
+
+    if (rect.width >= minRectDim && rect.width <= maxRectDim
+      && rect.height >= minRectDim && rect.height <= maxRectDim) {
+      const x = rect.x + rect.width / 2;
+      const y = rect.y + rect.height / 2;
+      const rad = Math.max(rect.width, rect.height) / 2;
+      cv.circle(dst, {x, y}, rad, [255, 0, 0, 255], 2);
+    }
+  }
+
+  filled.delete();
+  contours.delete();
+  hierarchy.delete();
+  
+  return {dst};
+}
