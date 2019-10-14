@@ -9,7 +9,7 @@ function perspectiveTransform({src, canvas, points}) {
   finalDestCoords.delete();
   srcCoords.delete();
   M.delete();
-  return dst;
+  return {dst};
 }
 
 function erosion({src}) {
@@ -18,7 +18,7 @@ function erosion({src}) {
   let anchor = new cv.Point(-1, -1);
   cv.erode(src, dst, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
   M.delete();
-  return dst;
+  return {dst};
 }
 
 function dilation({src}) {
@@ -27,7 +27,7 @@ function dilation({src}) {
   const anchor = new cv.Point(-1, -1);
   cv.dilate(src, dst, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
   M.delete();
-  return dst;
+  return {dst};
 }
 
 function opening({src}) {
@@ -36,7 +36,7 @@ function opening({src}) {
   let anchor = new cv.Point(-1, -1);
   cv.morphologyEx(src, dst, cv.MORPH_OPEN, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
   M.delete();
-  return dst;
+  return {dst};
 }
 
 function closing({src}) {
@@ -44,14 +44,14 @@ function closing({src}) {
   let M = cv.Mat.ones(5, 5, cv.CV_8U);
   cv.morphologyEx(src, dst, cv.MORPH_CLOSE, M);
   M.delete();
-  return dst;
+  return {dst};
 }
 
 // number should be odd
 function medianBlur({src, power}) {
   const dst = new cv.Mat();
   cv.medianBlur(src, dst, power);
-  return dst;
+  return {dst};
 }
 
 function blurVideo(canvas, number = 3) {
@@ -114,6 +114,7 @@ function bilinearMapY(height, width, points) {
   return cv.matFromArray(height, width, cv.CV_32FC1, mapY.flat());
 }
 
+// TODO
 function bilinearTransform({src, canvas, points}) {
   const {width, height} = canvas;
   const dst = new cv.Mat();
@@ -123,5 +124,56 @@ function bilinearTransform({src, canvas, points}) {
   cv.remap(src, dst, mapX, mapY, cv.INTER_NEAREST, cv.BORDER_CONSTANT, new cv.Scalar());
   mapX.delete();
   mapY.delete();
+  return {dst};
+}
+
+function grayImage({src}) {
+  const dst = new cv.Mat();
+  cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+  const hist = getHist(dst);
+  return {dst, hist};
+}
+
+function normilize({src}) {
+  let dst = new cv.Mat();
+  let none = new cv.Mat();
+  cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+  cv.normalize(dst, dst, 255, 0, cv.NORM_MINMAX, -1, none);
+  none.delete();
+  const hist = getHist(dst);
+  return {dst, hist};
+}
+
+function equalize({src}) {
+  const dst = new cv.Mat();
+  cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+  cv.equalizeHist(dst, dst);
+  const hist = getHist(dst);
+  return {dst, hist};
+}
+
+function getHist(src) {
+  let srcVec = new cv.MatVector();
+  srcVec.push_back(src);
+  let hist = new cv.Mat();
+  let mask = new cv.Mat();
+  let scale = 2;
+
+  cv.calcHist(srcVec, [0], mask, hist, [256], [0, 255], false);
+
+  const color = new cv.Scalar(255, 255, 255);
+  let result = cv.minMaxLoc(hist, mask);
+  let max = result.maxVal;
+  let dst = new cv.Mat.zeros(src.rows, 256 * scale, cv.CV_8UC3);
+
+  for (let i = 0; i < 256; i++) {
+    let binVal = hist.data32F[i] * src.rows / max;
+    let point1 = new cv.Point(i * scale, src.rows - 1);
+    let point2 = new cv.Point((i + 1) * scale - 1, src.rows - binVal);
+    cv.rectangle(dst, point1, point2, color, cv.FILLED);
+  }
+  hist.delete();
+  mask.delete();
+
   return dst;
 }

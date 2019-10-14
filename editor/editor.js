@@ -1,6 +1,7 @@
 class Editor {
   constructor(props) {
     this.canvas = props.canvas;
+    this.histCanvas = props.histCanvas;
     this.history = [cv.imread(this.canvas.id)];
     this.historyIndex = 0;
   }
@@ -22,7 +23,13 @@ class Editor {
   }
 
   showCurrent() {
+    this.histCanvas.style.display = 'none';
     cv.imshow(this.canvas.id, this.getCurrent());
+  }
+
+  showHist(hist) {
+    this.histCanvas.style.display = 'block';
+    cv.imshow(this.histCanvas.id, hist);
   }
 
   undo() {
@@ -39,14 +46,18 @@ class Editor {
   }
 
   executeOperation(method, props) {
-    const src = method({
+    const { dst, hist} = method({
       ...props,
       src: this.getCurrent(),
       canvas: this.canvas,
     });
 
-    this.addToHistory(src);
+    this.addToHistory(dst);
     this.showCurrent();
+
+    if (hist) {
+      this.showHist(hist);
+    }
   }
 
   getCursorPosition(event) {
