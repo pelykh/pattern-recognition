@@ -17,60 +17,58 @@ const loadImageFromFile = () => {
 
 loadImageFromFile();
 
+const editor = new Editor({ canvas: canvas });
 
-const perspectiveTransformButton = document.getElementById('perspective-transform-button');
-
-// Pick points to perform perspective transformations
-perspectiveTransformButton.addEventListener('click', () => {
-  const points = [];
-
-  const pickPointsHandler = (event) => {
-    points.push(getCursorPosition(canvas, event));
-
-    if (points.length >= 4) {
-      canvas.removeEventListener('click', pickPointsHandler);
-      perspectiveTransform(points, canvas);
-    }
-  };
-
-  canvas.addEventListener('click', pickPointsHandler);
+const erosionOperation = new Operation({
+  button: document.getElementById(('erosion-button')),
+  method: erosion,
+  editor,
 });
 
-const bilinearTransformButton = document.getElementById('bilinear-transform-button');
-
-// Pick points to perform biliniar transformations
-bilinearTransformButton.addEventListener('click', () => {
-  const points = [];
-
-  const pickPointsHandler = (event) => {
-    points.push(getCursorPosition(canvas, event));
-
-    if (points.length >= 4) {
-      canvas.removeEventListener('click', pickPointsHandler);
-      bilinearTransform(points, canvas);
-    }
-  };
-
-  canvas.addEventListener('click', pickPointsHandler);
+const dilationOperation = new Operation({
+  button: document.getElementById(('dilation-button')),
+  method: dilation,
+  editor,
 });
 
-document.getElementById('revert-button')
-  .addEventListener('click', loadImageFromFile);
+const openingOperation = new Operation({
+  button: document.getElementById(('opening-button')),
+  method: opening,
+  editor,
+});
 
-document.getElementById(('erosion-button'))
-  .addEventListener('click', () => erosion(canvas));
+const closingOperation = new Operation({
+  button: document.getElementById(('closing-button')),
+  method: closing,
+  editor,
+});
 
-document.getElementById(('dilation-button'))
-  .addEventListener('click', () => dilation(canvas));
+const perspectiveTransformOperation = new PickPointsOperation({
+  button: document.getElementById('perspective-transform-button'),
+  method: perspectiveTransform,
+  number: 4,
+  editor
+});
 
-document.getElementById(('opening-button'))
-  .addEventListener('click', () => opening(canvas));
+const biliniarTransformOperation = new PickPointsOperation({
+  button: document.getElementById('bilinear-transform-button'),
+  method: bilinearTransform,
+  number: 4,
+  editor,
+});
 
-document.getElementById(('closing-button'))
-  .addEventListener('click', () => closing(canvas));
-
-document.getElementById(('median-blur-button'))
-  .addEventListener('click', () => medianBlur(canvas, 3));
+const medianBlurOperation = new Operation({
+  button: document.getElementById(('median-blur-button')),
+  method: medianBlur,
+  editor,
+});
 
 document.getElementById(('blur-video-button'))
   .addEventListener('click', () => blurVideo(canvas, 11));
+
+
+document.getElementById('undo-button')
+  .addEventListener('click', () => editor.undo());
+
+document.getElementById('redo-button')
+  .addEventListener('click', () => editor.redo());
