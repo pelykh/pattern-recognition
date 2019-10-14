@@ -23,6 +23,21 @@
         position: fixed;
         top: 50px;
         left: 50px;
+        background-color: white;
+        padding: 5px 20px 20px 20px;
+        border: 1px solid darkgrey;
+        border-radius: 25px;
+        max-width: 150px;
+        text-align: center;
+    }
+
+    #controls button {
+        width: 90%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
     }
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -36,6 +51,10 @@
     </div>
 </div>
 <div id="controls">
+    <p>basic</p>
+    <button id="undo-button">Undo</button>
+    <button id="redo-button">Redo</button>
+    <p>lab9</p>
     <button id="perspective-transform-button">Perspective Transform</button>
     <button disabled id="bilinear-transform-button">Bilinear Transform (Not completed)</button>
     <button id="erosion-button">Erosion</button>
@@ -44,8 +63,6 @@
     <button id="closing-button">Closing</button>
     <button id="median-blur-button">Median Blur</button>
     <button id="blur-video-button">Blur Video</button>
-    <button id="undo-button">Undo</button>
-    <button id="redo-button">Redo</button>
 </div>
 <script src="../lib/opencv.js"></script>
 <script src="editor.js"></script>
