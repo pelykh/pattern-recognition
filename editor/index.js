@@ -17,9 +17,7 @@ const loadImageFromFile = () => {
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 };
 
-loadImageFromFile();
-
-cv.onRuntimeInitialized = () => {
+const initEditor = () => {
   const editor = new Editor({ canvas, histCanvas });
 
   const erosionOperation = new Operation({
@@ -90,6 +88,30 @@ cv.onRuntimeInitialized = () => {
     editor,
   });
 
+  const cannyOperation = new Operation({
+    button: document.getElementById(('canny-button')),
+    method: canny,
+    editor,
+  });
+
+  const sobelOperation = new Operation({
+    button: document.getElementById(('sobel-button')),
+    method: sobel,
+    editor,
+  });
+
+  const findContoursOperation = new Operation({
+    button: document.getElementById(('find-contours-button')),
+    method: findContors,
+    editor,
+  });
+
+  const strangeFormulaOperation = new Operation({
+    button: document.getElementById(('strange-formula-button')),
+    method: strangeFormula,
+    editor,
+  });
+
   document.getElementById(('blur-video-button'))
     .addEventListener('click', () => blurVideo(canvas, 11));
 
@@ -99,5 +121,8 @@ cv.onRuntimeInitialized = () => {
 
   document.getElementById('redo-button')
     .addEventListener('click', () => editor.redo());
-
 };
+
+loadImageFromFile();
+// cv.onRuntimeInitialized = () => initEditor();
+initEditor()

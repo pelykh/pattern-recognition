@@ -207,6 +207,72 @@ function findBalls({src}) {
   filled.delete();
   contours.delete();
   hierarchy.delete();
-  
+
   return {dst};
+}
+
+function sobel({src}) {
+  const dst = new cv.Mat();
+  cv.cvtColor(src, dst, cv.COLOR_RGB2GRAY, 0);
+  cv.Sobel(dst, dst, cv.CV_8U, 0, 1, 3, 1, 0, cv.BORDER_DEFAULT);
+  // cv.Sobel(src, dstx, cv.CV_8U, 1, 0, 3, 1, 0, cv.BORDER_DEFAULT);
+  // cv.Scharr(src, dstx, cv.CV_8U, 1, 0, 1, 0, cv.BORDER_DEFAULT);
+  // cv.Scharr(src, dsty, cv.CV_8U, 0, 1, 1, 0, cv.BORDER_DEFAULT);
+  return {dst};
+}
+
+function canny({src}) {
+  const dst = new cv.Mat();
+  cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+  cv.Canny(src, dst, 50, 100, 3, false);
+  return {dst};
+}
+
+function findContors({src}){
+  const dst = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
+  const filled = new cv.Mat();
+  cv.cvtColor(src, filled, cv.COLOR_RGBA2GRAY, 0);
+  cv.threshold(filled, filled, 50, 200, cv.THRESH_BINARY);
+
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+
+  cv.findContours(filled, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+
+  for (let i = 0; i < contours.size(); ++i) {
+    let color = new cv.Scalar(Math.round(Math.random() * 255), Math.round(Math.random() * 255),
+      Math.round(Math.random() * 255));
+    cv.drawContours(dst, contours, i, color, 1, cv.LINE_8, hierarchy, 255);
+  }
+
+  filled.delete();
+  contours.delete();
+  hierarchy.delete();
+
+  return {dst};
+}
+
+// TODO
+// Трансформуйте картинку в сірий колір та знайдіть підкреслення точок контура згідно формули sqrt( imageDX^2 + imageDY^2 ).
+function strangeFormula({src}) {
+  const grayX = new cv.Mat();
+  const grayY = new cv.Mat();
+  cv.cvtColor(src, grayX, cv.COLOR_RGBA2GRAY, 0);
+  cv.cvtColor(src, grayY, cv.COLOR_RGBA2GRAY, 0);
+
+  cv.pow(grayX, 2, grayX);
+  cv.pow(grayY, 2, grayY);
+
+  const contImg = new cv.Mat();
+
+  cv.add(grayX, grayY, contImg);
+
+  cv.sqrt(src, src);
+  console.log("wga");
+  contImg.convertTo(contImg, cv.CV_8UC3, 255.0);
+  const dst = new cv.Mat();
+
+  cv.threshold(contImg, dst, 0.7, 1.0, cv.THRESH_BINARY);
+
+  return {dst: contImg};
 }
