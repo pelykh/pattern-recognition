@@ -124,5 +124,11 @@ const initEditor = () => {
 };
 
 loadImageFromFile();
+
+// old_opencv.js
+initEditor();
+
+// opencv.js
 // cv.onRuntimeInitialized = () => initEditor();
-initEditor()
+
+// const opencvIsReady = () => initEditor();

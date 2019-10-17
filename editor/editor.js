@@ -105,3 +105,13 @@ class PickPointsOperation extends Operation {
     canvas.addEventListener('click', pickPointsHandler);
   }
 }
+
+class ExecuteOperation extends Operation {
+  constructor(props) {
+    super(props);
+  }
+
+  onOperationButtonClick() {
+    this.method();
+  }
+}

@@ -228,7 +228,7 @@ function canny({src}) {
   return {dst};
 }
 
-function findContors({src}){
+function findContors({src}) {
   const dst = cv.Mat.zeros(src.rows, src.cols, cv.CV_8UC3);
   const filled = new cv.Mat();
   cv.cvtColor(src, filled, cv.COLOR_RGBA2GRAY, 0);
