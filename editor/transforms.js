@@ -194,7 +194,7 @@ function findBalls({src}) {
 
   for (let i = 0; i < contours.size(); ++i) {
     const rect = cv.boundingRect(contours.get(i));
-
+    
     if (rect.width >= minRectDim && rect.width <= maxRectDim
       && rect.height >= minRectDim && rect.height <= maxRectDim) {
       const x = rect.x + rect.width / 2;
