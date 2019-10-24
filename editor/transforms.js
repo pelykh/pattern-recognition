@@ -67,7 +67,6 @@ function blurVideo(canvas, number = 3) {
   let i = 0;
 
   return setInterval(() => {
-    console.log(i, pics[i]);
     cv.imshow(id, pics[i]);
     i += 1;
     if (i >= 10) i = 0;
@@ -194,7 +193,7 @@ function findBalls({src}) {
 
   for (let i = 0; i < contours.size(); ++i) {
     const rect = cv.boundingRect(contours.get(i));
-    
+
     if (rect.width >= minRectDim && rect.width <= maxRectDim
       && rect.height >= minRectDim && rect.height <= maxRectDim) {
       const x = rect.x + rect.width / 2;
